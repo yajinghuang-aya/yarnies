@@ -1,13 +1,13 @@
-import numpy as ny  
+import numpy as np
 import pandas as pd 
 from sklearn.metrics import r2_score
 from sklearn.ensemble import RandomForestRegressor
-
+from statsmodels.tsa.stattools import acf
 
 
 def prepare_data(color_code='41'):
 
-	dat_rf=pd.read_csv("color_weekly_feature_to_month_"+color_code+".csv")
+	dat_rf=pd.read_csv("color_rank_features/color_weekly_feature_to_month_"+color_code+".csv")
 	x=dat_rf.drop(columns=['Unnamed: 0','index','y']).copy()
 	y=dat_rf['y'].copy()
 	x['year']=x['month'].apply(lambda x: int(x[:4]))
@@ -24,13 +24,13 @@ def prepare_data(color_code='41'):
 
 
 
-def random_forest(n_estimators=11,random_state=1):
+def random_forest(X_train,y_train,n_estimators=11,random_state=1):
 	model = RandomForestRegressor(n_estimators=n_estimators,min_samples_leaf=2, random_state=random_state)
 	model.fit(X_train, y_train)
 
 	return model
 
-def model_predection(model,X_valid,y_valid)
+def model_predection(model,X_valid,y_valid):
 	preds = model.predict(X_valid)
 	r2 = r2_score(y_valid, preds)
 	print('R2 score:', r2)
@@ -48,10 +48,9 @@ def forecast_accuracy(forecast, actual):
     maxs = np.amax(np.hstack([forecast[:,None], 
                               actual[:,None]]), axis=1)
     minmax = 1 - np.mean(mins/maxs)             # minmax
-    acf1 = acf(fc-test)[1]                      # ACF1
+    #acf1 = acf(fc-test)[1]                      # ACF1
     return({'mape':mape, 'me':me, 'mae': mae, 
-            'mpe': mpe, 'rmse':rmse, 'acf1':acf1, 
+            'mpe': mpe, 'rmse':rmse,# 'acf1':acf1, 
             'corr':corr, 'minmax':minmax})
 
     
-forecast_accuracy(preds,y_valid)

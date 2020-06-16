@@ -6,3 +6,5 @@ __pycache__/
 .oldgit/
 .ipynb_checkpoints/
 *.npy
+color_rank_features/
+
