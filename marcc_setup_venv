@@ -1,0 +1,11 @@
+conda:
+
+
+module load python/3.6-anaconda
+conda create -p ./path/to/my_env_name
+conda activate ./path/to/my_env_name
+conda install ipykernel
+
+pip freeze > requirements.txt
+
+

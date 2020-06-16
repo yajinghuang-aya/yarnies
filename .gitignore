@@ -1,0 +1,7 @@
+__pycache__/
+*.csv
+*.pkl
+*.png
+*.jpg
+.oldgit/
+.ipynb_checkpoints/
