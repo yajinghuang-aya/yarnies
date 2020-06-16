@@ -5,3 +5,4 @@ __pycache__/
 *.jpg
 .oldgit/
 .ipynb_checkpoints/
+*.npy
