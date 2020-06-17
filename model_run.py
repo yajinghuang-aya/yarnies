@@ -2,25 +2,46 @@ import numpy as ny
 import pandas as pd 
 from model import *
 import matplotlib.pyplot as plt
-rank=pd.read_csv("color_rank_136.csv",header=None)
+import matplotlib.dates as mdates
 
-c=str(rank[0][9])
+#rank=pd.read_csv("color_rank_136.csv",header=None)
 
-(X_train,y_train,X_valid,y_valid) = prepare_data(color_code=c)
+#c=str(rank[0][9])
+columns=['tot']
+columns.extend(['h'+str(i) for i in range(6)])
+columns.extend(['s'+str(i) for i in range(5)])
+columns.extend(['l'+str(i) for i in range(5)])
+dat_rf=pd.read_csv("color_feature_hsl/color_weekly_feature_to_month_h0.csv")
+time=dat_rf['month']
 
-model=random_forest(X_train,y_train)
+for i in columns[1:]:
 
-preds_test,r2=model_predection(model,X_valid,y_valid)
+	(X_train,y_train,X_valid,y_valid) = prepare_data(color_code=i)
 
-accuracy=forecast_accuracy(preds_test, y_valid)
-print(accuracy)
+	model=random_forest(X_train,y_train)
 
+	preds_test,r2=model_predection(model,X_valid,y_valid)
 
-preds_train = model.predict(X_train)
+	accuracy=forecast_accuracy(preds_test, y_valid)
+	print('cat= ',i)
+	print(accuracy)
+
+	divide=80
+	preds_train = model.predict(X_train)
 #r2 = r2_score(y_train, preds)
+	fig, ax = plt.subplots(figsize=(8,5))
 
-plt.plot(range(77),y_train,color='orange')
-plt.plot(range(77),preds_train,color='g')
-plt.plot(range(80,97),y_valid,color='orange')
-plt.plot(range(80,97),preds_test,color='g')
-plt.show()
+	ax.plot(pd.to_datetime(time[:divide]),y_train*100,color='orange',label='training data')
+	ax.plot(pd.to_datetime(time[:divide]),preds_train*100,color='g',label='model')
+	ax.plot(pd.to_datetime(time[83:100]),y_valid*100,color='orange',ls=":",label='test data')
+	ax.plot(pd.to_datetime(time[83:100]),preds_test*100,color='g')
+	ax.set_title("Category "+i.upper())
+	ax.set_xlabel('year')
+	ax.set_ylabel('% popularity')
+	ax.legend(loc="upper left")
+	years = mdates.YearLocator()
+	ax.xaxis.set_major_locator(years)
+	plt.savefig("color_feature_hsl/dat_fit_"+i+".png")
+
+
+
