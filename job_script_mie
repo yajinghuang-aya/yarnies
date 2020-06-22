@@ -1,6 +1,0 @@
-#SBATCH --time=10:0:0
-#SBATCH --array=1-99
-
-python user_data_$SLURM_ARRAY_TASK_ID.py
-
-
