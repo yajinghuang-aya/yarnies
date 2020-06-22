@@ -3,55 +3,51 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage.color import rgb2lab, deltaE_cie76,lab2rgb
 
-def get_dataframe_for_model(x_week,y,column='s0l0'):
+
+def get_dataframe_for_model(x_week,y,column='h0'):
 	feature=x_week.copy()
 	feature=feature[['time',column]]
 	feature[column]=x_week[column]/x_week['tot']
 	feature[column]=feature[column].rolling(4).mean()
 
 
-	colname=['month','y']
+	colname=['month']
 	colname.extend([str(i) for i in range(12)])
 	data=pd.DataFrame(columns=colname)
-	data['month']=y.time[14:]
+	#print(y['time'])
+	data['month']=y['time'][114]
+
 	data.reset_index(inplace=True)
 
-	for i in range(data.shape[0]):#[:5]:
-	    month=pd.to_datetime(data['month'].iloc[i])
-
-	    start=month - pd.DateOffset(months=4)
-	    end=month- pd.DateOffset(months=1)
-	    #print(start,end)
-	    xs=feature[pd.to_datetime(feature['time'])>=start]
-	    xs=xs[pd.to_datetime(xs['time'])<end].iloc[-12:]
-	    xs.reset_index(inplace=True)
+	#for i in range(data.shape[0]):#[:5]:)
+	xs=feature
+	xs=xs.iloc[-12:]
+	xs.reset_index(inplace=True)
 	    #print(xs)
-	    #print('')
-	    y_current=y[y['time']==data['month'].iloc[i]]
-	    
-	    #print('')
-	    #print(y_current['41']/y_current['tot'])
-	    #print(data['y'].iloc[i])
-	    data['y'].iloc[i]=(y_current[column]/y_current['tot']).values[0]
-	    for j in range(12):
-	        data[str(j)].iloc[i]=xs.iloc[j][column]
+	print(xs)
+	print(data)
+	for j in range(12):
+	    data[str(j)].iloc[0]=xs.iloc[j][column]
 
 	#data['y']=(y['41']/y['tot'])[60:]
-	data.to_csv("color_feature_hsl/color_weekly_feature_to_month_"+column+".csv")
+	data.to_csv("color_feature_hsl/color_weekly_last_feature_"+column+".csv")
 
 	return data
 
 
 columns=['tot']
+#columns.extend(['h'+str(i) for i in range(6)])
+#columns.extend(['s'+str(i) for i in range(5)])
+#columns.extend(['l'+str(i) for i in range(5)])
 columns.extend(['s'+str(i)+'l'+str(j) for i in range(5) for j in range(5)])
 
-dat_marginal=pd.read_csv("pop_color_hsl_marginal2D_weekly.csv")
-dat_marginal_monthly=pd.read_csv("pop_color_hsl_marginal2D_monthly.csv")
+dat_marginal2D=pd.read_csv("pop_color_hsl_marginal2D_weekly.csv")
+dat_marginal2D_monthly=pd.read_csv("pop_color_hsl_marginal2D_monthly.csv")
 
-for i in columns[1:]:
-	get_dataframe_for_model(dat_marginal,dat_marginal_monthly,column=i)
+#for i in columns[1:]:
+#	get_dataframe_for_model(dat_marginal2D,dat_marginal2D_monthly,column=i)
 
-
+get_dataframe_for_model(dat_marginal2D,dat_marginal2D_monthly,column='s0l2')
 
 
 #x_week=pd.read_csv("project_color_pop_weekly.csv")

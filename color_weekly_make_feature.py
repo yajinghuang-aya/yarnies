@@ -20,8 +20,8 @@ def get_dataframe_for_model(x_week,y,color_code='41'):
 	for i in range(data.shape[0]):#[:5]:
 	    month=pd.to_datetime(data['month'].iloc[i])
 
-	    start=month - pd.DateOffset(months=2)
-	    end=month
+	    start=month - pd.DateOffset(months=3)
+	    end=month- pd.DateOffset(months=1)
 	    #print(start,end)
 	    xs=feature[pd.to_datetime(feature['time'])>=start]
 	    xs=xs[pd.to_datetime(xs['time'])<end].iloc[-8:]

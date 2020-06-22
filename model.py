@@ -34,11 +34,16 @@ def prepare_data(color_code='h0'):
 	x['m']=x['month'].apply(lambda x: int(x[-2:]))
 	x=x.drop(columns='month')
 
-	divide=(int(lenth*0.8))
+	divide=(int(lenth*0.9))
+	#X_train=x.iloc[:divide]
+	#y_train=y.iloc[:divide]
+	#X_valid=x.iloc[divide+4:]
+	#y_valid=y.iloc[divide+4:]
+
 	X_train=x.iloc[:divide]
 	y_train=y.iloc[:divide]
-	X_valid=x.iloc[divide+3:]
-	y_valid=y.iloc[divide+3:]
+	X_valid=x.iloc[divide:]
+	y_valid=y.iloc[divide:]
 
 
 	return  (X_train,y_train,X_valid,y_valid)

@@ -12,7 +12,7 @@ def get_dataframe_for_model(x_week,y,column='h0'):
 
 
 	colname=['month','y']
-	colname.extend([str(i) for i in range(8)])
+	colname.extend([str(i) for i in range(12)])
 	data=pd.DataFrame(columns=colname)
 	data['month']=y.time[14:]
 	data.reset_index(inplace=True)
@@ -20,11 +20,11 @@ def get_dataframe_for_model(x_week,y,column='h0'):
 	for i in range(data.shape[0]):#[:5]:
 	    month=pd.to_datetime(data['month'].iloc[i])
 
-	    start=month - pd.DateOffset(months=2)
-	    end=month
+	    start=month - pd.DateOffset(months=4)
+	    end=month- pd.DateOffset(months=1)
 	    #print(start,end)
 	    xs=feature[pd.to_datetime(feature['time'])>=start]
-	    xs=xs[pd.to_datetime(xs['time'])<end].iloc[-8:]
+	    xs=xs[pd.to_datetime(xs['time'])<=end].iloc[-12:]
 	    xs.reset_index(inplace=True)
 	    #print(xs)
 	    #print('')
@@ -34,7 +34,7 @@ def get_dataframe_for_model(x_week,y,column='h0'):
 	    #print(y_current['41']/y_current['tot'])
 	    #print(data['y'].iloc[i])
 	    data['y'].iloc[i]=(y_current[column]/y_current['tot']).values[0]
-	    for j in range(8):
+	    for j in range(12):
 	        data[str(j)].iloc[i]=xs.iloc[j][column]
 
 	#data['y']=(y['41']/y['tot'])[60:]
