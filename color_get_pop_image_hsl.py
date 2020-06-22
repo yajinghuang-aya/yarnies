@@ -4,7 +4,7 @@ import pandas as pd
 from os import path
 import cv2
 
-
+#divde jobs for parallel running
 job_id=0
 print('job_id ',job_id)
 

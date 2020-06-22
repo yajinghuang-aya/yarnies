@@ -23,7 +23,7 @@ model_name = 'faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28'
 
 
 def load_model(model_name):
-	model_dir="/home-2/hwang127@jhu.edu/scratch/mie/models/"
+	model_dir="models/"   #from https://github.com/tensorflow/models.git 
 	model_dir= model_dir+model_name+"/saved_model"
 	model = tf.saved_model.load(str(model_dir))
 	model = model.signatures['serving_default']

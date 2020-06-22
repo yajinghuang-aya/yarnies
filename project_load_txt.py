@@ -1,15 +1,20 @@
 import pandas as pd
 import numpy as np
 import requests
-#from scraping_util import *
 
+
+
+# divide in to different jobs for parallel running
 job_id=0
 print('job_id',job_id)
 
-user="2615aa2d9a9c4e1d63a9b961b018cc68"
-pwd="q6x-RFUjwvc_rdhGyCLeKxkSrDiHNcA07e0pL6EO"
+# user credentials from ravelry pro account
+user=" " 
+pwd=" "
 url_ravelry="https://api.ravelry.com/"
 
+
+# url with filters: tops only, has photo, within 40 miles of NYC
 url=url_ravelry+'projects/search.json?'+ \
 'pc=coat|sweater|tops|vest&photo=yes&within=40miles&sort=started'
 

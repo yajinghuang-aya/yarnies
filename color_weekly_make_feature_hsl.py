@@ -43,6 +43,7 @@ def get_dataframe_for_model(x_week,y,column='h0'):
 	return data
 
 
+# for 1D: H, S, or L
 columns=['tot']
 columns.extend(['h'+str(i) for i in range(6)])
 columns.extend(['s'+str(i) for i in range(5)])
@@ -50,6 +51,15 @@ columns.extend(['l'+str(i) for i in range(5)])
 
 dat_marginal=pd.read_csv("pop_color_hsl_marginal_weekly.csv")
 dat_marginal_monthly=pd.read_csv("pop_color_hsl_marginal_monthly.csv")
+
+
+# for 2D: SxL
+#columns=['tot']
+#columns.extend(['s'+str(i)+'l'+str(j) for i in range(5) for j in range(5)])
+
+#dat_marginal=pd.read_csv("pop_color_hsl_marginal2D_weekly.csv")
+#dat_marginal_monthly=pd.read_csv("pop_color_hsl_marginal2D_monthly.csv")
+
 
 for i in columns[1:]:
 	get_dataframe_for_model(dat_marginal,dat_marginal_monthly,column=i)
