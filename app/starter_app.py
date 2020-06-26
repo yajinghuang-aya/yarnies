@@ -15,7 +15,7 @@ st.write("""
 Hello *world!*
 """)
 
-image = Image.open('../color_feature_hsl/dat_fit_h3.png')
+image = Image.open('color_feature_hsl/dat_fit_h3.png')
 
 st.image(image, caption='model ',  use_column_width=True)
 
@@ -31,7 +31,7 @@ i='h0'
 
 @st.cache
 def load_model_fit(i):
-	fit=pd.read_csv("../color_feature_hsl/model_fit_"+i+".csv")
+	fit=pd.read_csv("color_feature_hsl/model_fit_"+i+".csv")
 	return fit
 
 
@@ -60,7 +60,7 @@ def load_model_fit(i):
 #time=dat_rf['month']
 
 
-dat_marginal2D=(pd.read_csv("../pop_color_hsl_marginal2D_weekly.csv"))
+dat_marginal2D=(pd.read_csv("pop_color_hsl_marginal2D_weekly.csv"))
 
 
 from matplotlib import gridspec
