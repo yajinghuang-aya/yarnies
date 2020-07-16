@@ -28,6 +28,11 @@ def rgb2hex(rgb):
     rgb=tuple(rgb)
     return '#'+('%02x%02x%02x' % rgb)
 
+def hex2rgb(value):
+    value = value.lstrip('#')
+    lv = len(value)
+    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
 def rgb2hsl(pix):
     pix=np.asarray(pix)/255.
     pixcolor=Color(rgb=pix)
@@ -162,7 +167,7 @@ def get_plotly_SxL(col_test,data):
     fig = make_subplots(
         rows=1,
         cols=2,
-        subplot_titles=(" ", "Colors in the Palette"),
+        subplot_titles=(" ", "Colors in the Same <br> Saturation X Lightness Palette"),
         specs=
             [[{'type': 'xy'}, {'type': 'polar'}]],column_widths=[0.75, 0.25]
     )
@@ -174,10 +179,10 @@ def get_plotly_SxL(col_test,data):
     forecast.append(pred[0]*100)
 
     fig.add_trace(go.Scatter(x=time,y=forecast,
-                             mode='lines', name='model & forecast',line=dict(color="#80bf40",dash='dot')),
+                             mode='lines', name='model & forecast',line=dict(color="#80bf40",dash='dot',width=3)),
                  row=1, col=1)
     fig.add_trace(go.Scatter(x=t, y=100*df_forecasting[col_test],
-                              mode='lines', name='data',line=dict(color="#409fbf")),
+                              mode='lines', name='data',line=dict(color="#409fbf",width=3)),
                  row=1, col=1)
 
 
@@ -437,3 +442,196 @@ def dominant_color_plot(image):
     print(color_order)
 
     return fig
+
+
+
+@st.cache(allow_output_mutation=True)
+def get_plotly_H_6(data):
+
+    col=['h0','h1','h2','h3','h4','h5']
+
+    fig = go.Figure()
+
+    i=0
+    for col_test in col:
+
+        df_forecasting=rolling_rf_data_pre(data,col=col_test)
+        f=forescast_feature_pre(data,df_forecasting,col=col_test)
+        t,model,pred=forecast_rf(df_forecasting,f)
+
+        time=list(t)
+        time.append(pd.to_datetime("2020-06-30"))
+        forecast=list(100*model)
+        forecast.append(pred[0]*100)
+
+        color=np.asarray(hsl2rgb([hue_value[i]/360.,0.5,0.7]))
+        color=(color*255).astype('int')
+
+        color = rgb2hex(color)
+
+        
+        fig.add_trace(go.Scatter(x=t, y=100*df_forecasting[col_test], name='data: '+hue_name[i],
+                                      mode='lines',line=dict(color=color,width=4)))
+        fig.add_trace(go.Scatter(x=time,y=forecast,
+                                     mode='lines' , name='forecast',
+                                     line=dict(color=color,dash='dot',width=4)))
+    
+        i+=1
+        print(color)
+
+    h=int(col_test[1])
+
+
+
+
+    title="Popularity of Each Primary Hue"
+    fig.update_layout(
+            title=title,
+            width=850,
+            height=550,
+            xaxis_title="time",
+            yaxis_title="% popularity",
+            font=dict(
+                family="Courier New, monospace",
+                size=17,
+                color="#7f7f7f"),
+            xaxis_showgrid=True,
+            yaxis_showgrid=True,
+            xaxis=dict(range=[pd.to_datetime("2016-06-30"),pd.to_datetime("2020-06-30")],
+                       rangeselector=dict(
+                    buttons=list([
+
+                        dict(count=6,
+                             label="last 6 months",
+                             step="month",
+                             stepmode="backward"),
+
+                        dict(count=1,
+                             label="last year",
+                             step="year",
+                             stepmode="backward"),
+                        dict(step="all")
+                    ])
+                ),
+                rangeslider=dict(
+                    visible=True
+                ),
+                type="date"
+                      ),
+                legend=dict(
+                x=1.1,
+                y=0.99,
+                traceorder='normal',
+                font=dict(
+                    size=12,),
+            ),
+                
+                 #paper_bgcolor='rgba(0,0,0,0)')
+                plot_bgcolor='rgba(0,0,0,0)',
+            
+                )
+    fig.update_yaxes(showgrid=True,gridcolor="#DCDCDC")
+    fig.update_xaxes(showgrid=True,gridcolor="#DCDCDC")
+    return fig
+
+
+
+def get_plotly_SxL_pop(data,hue=4):
+    
+    col=['s0l2','s0l1','s1l1','s1l2','s0l3']
+
+ 
+
+
+    #fig = go.Figure()
+
+    fig = go.Figure()
+
+    for col_test in col:
+
+        s=int(col_test[1])
+        l=int(col_test[-1])
+
+        df_forecasting=rolling_rf_data_pre(data,col=col_test)
+        f=forescast_feature_pre(data,df_forecasting,col=col_test)
+        t,model,pred=forecast_rf(df_forecasting,f)
+
+
+        time=list(t)
+        time.append(pd.to_datetime("2020-06-30"))
+        forecast=list(100*model)
+        forecast.append(pred[0]*100)
+
+        color=np.asarray(hsl2rgb([hue_value[hue]/360.,satuation_value[s]/100,lightness_value[l]/100]))
+        color=(color*255).astype('int')
+
+        color = rgb2hex(color)
+
+
+        fig.add_trace(go.Scatter(x=t, y=100*df_forecasting[col_test],
+                                  mode='lines', name='data: saturation = '+str(satuation_value[s])+'%, lightness = '+str(lightness_value[l])+'%'
+                                  ,line=dict(color=color,width=3)))
+        fig.add_trace(go.Scatter(x=time,y=forecast,
+                                 mode='lines', name='forecast',line=dict(color=color,dash='dot',width=3)))
+
+
+    title="Most Popular Saturation X Lightness Categories (Hue Independent)"
+
+    fig.update_layout(
+        title=title,
+        
+        width=1050,
+        height=650,
+        xaxis_title="time",
+        yaxis_title="% popularity",
+        font=dict(
+            family="Courier New, monospace",
+            size=17,
+            color="#7f7f7f"),
+        xaxis=dict(range=[pd.to_datetime("2016-06-30"),pd.to_datetime("2020-06-30")],
+                   rangeselector=dict(
+                buttons=list([
+
+                    dict(count=6,
+                         label="last 6 months",
+                         step="month",
+                         stepmode="backward"),
+
+                    dict(count=1,
+                         label="last year",
+                         step="year",
+                         stepmode="backward"),
+                    dict(step="all")
+                ])
+            ),
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date"
+                  ),
+            legend=dict(
+            x=1.1,
+            y=0.99,
+            traceorder='normal',
+            font=dict(
+                size=12,),
+        ),
+    )
+
+
+    return fig
+
+
+def hsl2bucket(pix_hsl):
+    for i in range(1,6):
+        if pix_hsl[0]>=hue[i][0] and pix_hsl[0]<hue[i][1]:
+            pix_h=i
+        if pix_hsl[0]>=330 or pix_hsl[0]<30:
+            pix_h=0
+    for i in range(5):
+        if pix_hsl[1]>=satuation[i][0] and pix_hsl[1]<satuation[i][1]:
+            pix_s=i
+        if pix_hsl[2]>=lightness[i][0] and pix_hsl[2]<lightness[i][1]:
+            pix_l=i
+
+    return pix_h,pix_s,pix_l
