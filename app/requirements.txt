@@ -129,7 +129,7 @@ pystan==2.19.1.1
 python-dateutil==2.8.1
 pytz==2020.1
 PyWavelets==1.1.1
-PyYAML==5.1
+PyYAML==5.4
 pyzmq==19.0.1
 qtconsole==4.4.3
 requests==2.23.0
