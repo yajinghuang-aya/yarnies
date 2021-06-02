@@ -168,7 +168,7 @@ tornado==5.1.1
 traitlets==4.3.3
 tzlocal==2.1
 umap-learn==0.4.4
-urllib3==1.25.9
+urllib3==1.26.5
 us==2.0.2
 validators==0.15.0
 virtualenv==20.0.21
