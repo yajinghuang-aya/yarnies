@@ -85,7 +85,7 @@ Markdown==3.1
 MarkupSafe==1.1.1
 matplotlib==3.2.2
 mido==1.2.9
-mistune==0.8.4
+mistune==2.0.3
 mock==2.0.0
 munch==2.5.0
 music21==5.7.0
